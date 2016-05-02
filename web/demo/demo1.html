@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+    <title>Polymer App Layout for Dart Test 1</title>
+
+    <script src="packages/web_components/webcomponents.js"></script>
+
+    <script>
+        window.Polymer = {dom: 'shadow', lazyRegister: false};
+    </script>
+    <script src="packages/web_components/dart_support.js"></script>
+    <script defer src="demo1.dart" type="application/dart"></script>
+    <script defer src="packages/browser/dart.js"></script>
+</head>
+
+<style is="custom-style">
+
+    body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        background-color: #eee;
+    }
+
+    #startDrawer {
+        --app-drawer-content-container: {
+            box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);
+        }
+    }
+
+    #endDrawer {
+        --app-drawer-content-container: {
+            box-shadow: -1px 0 2px 1px rgba(0, 0, 0, 0.18);
+        }
+    }
+
+    app-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #4285f4;
+        color: #fff;
+    }
+
+    app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+    }
+
+    sample-content {
+        padding-top: 192px;
+    }
+</style>
+
+<body>
+
+
+<app-drawer-layout responsive-width="1280px">
+    <app-header condenses reveals effects="waterfall">
+        <app-toolbar>
+            <paper-icon-button icon="menu" on-tap="toggleLeft"></paper-icon-button>
+            <div title></div>
+            <paper-icon-button icon="shopping-cart" on-tap="toggleRight"></paper-icon-button>
+        </app-toolbar>
+        <app-toolbar></app-toolbar>
+        <app-toolbar>
+            <div spacer title>My App</div>
+        </app-toolbar>
+    </app-header>
+
+    <app-drawer id="startDrawer" align="start"></app-drawer>
+
+    <app-drawer id="endDrawer" align="end"></app-drawer>
+
+    <sample-content size="100"></sample-content>
+
+</app-drawer-layout>
+
+</body>
+</html>
