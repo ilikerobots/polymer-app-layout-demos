@@ -1,0 +1,108 @@
+{
+  "templates": [
+    {
+      "name": "ZUPERKÜLBLOG",
+      "thumbnail": "site/images/publishing.png",
+      "demoUrl": "templates/publishing/",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/templates/publishing"
+    },
+    {
+      "name": "PESTO",
+      "thumbnail": "site/images/pesto.png",
+      "demoUrl": "templates/pesto/",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/templates/pesto"
+    },
+    {
+      "name": "SHRINE",
+      "thumbnail": "site/images/shrine.png",
+      "demoUrl": "templates/shrine/",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/templates/shrine"
+    },
+    {
+      "name": "TEST DRIVE",
+      "thumbnail": "site/images/test-drive.png",
+      "demoUrl": "templates/test_drive/",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/templates/test-drive"
+    }
+  ],
+  "demos": [
+    {
+      "name": "Demo 1",
+      "desc": "Using app-header and app-drawer",
+      "demoUrl": "demo/demo1.html",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/demo/demo1.html"
+    },
+    {
+      "name": "Demo 2",
+      "desc": "Using app-header-layout and app-drawer-layout",
+      "demoUrl": "demo/demo2.html",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/demo/demo2.html"
+    },
+    {
+      "name": "Demo 3",
+      "desc": "Using app-header-layout with a scrolling region",
+      "demoUrl": "demo/demo3.html",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/demo/demo3.html"
+    },
+    {
+      "name": "Demo 4",
+      "desc": "Using app-header-layout with iron-list",
+      "demoUrl": "demo/demo4.html",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/demo/demo4.html"
+    },
+    {
+      "name": "Demo 5",
+      "desc": "Using app-header-layout inside app-drawer",
+      "demoUrl": "demo/demo5.html",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/demo/demo5.html"
+    },
+    {
+      "name": "Demo 6",
+      "desc": "Placing app-drawer beneath app-header",
+      "demoUrl": "demo/demo6.html",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/demo/demo6.html"
+    },
+    {
+      "name": "Demo 7",
+      "desc": "Placing app-drawer after the content",
+      "demoUrl": "demo/demo7.html",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/demo/demo7.html"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Transform Navigation",
+      "desc": "As more screen space is available, side navigation can transform into tabs.",
+      "demoUrl": "patterns/transform-navigation/",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/patterns/transform-navigation/x-app.html"
+    },
+    {
+      "name": "Expand Card",
+      "desc": "Content cards may expand to take up more horizontal space.",
+      "demoUrl": "patterns/expand-card/",
+      "sourceUrl": "https://github.com/PolymerLabs/app-layout/tree/master/patterns/expand-card/index.html"
+    }
+  ],
+  "apps": [
+    {
+      "name": "Google I/O 2016",
+      "thumbnail": "site/images/io2016.png",
+      "demoUrl": "https://events.google.com/io2016/"
+    },
+    {
+      "name": "Polymer Summit 2015",
+      "thumbnail": "site/images/polymer-summit.png",
+      "demoUrl": "https://www.polymer-project.org/summit"
+    },
+    {
+      "name": "Chrome Dev Summit 2015",
+      "thumbnail": "site/images/cds2015.png",
+      "demoUrl": "https://developer.chrome.com/devsummit"
+    },
+    {
+      "name": "PICA",
+      "thumbnail": "site/images/pica.png",
+      "demoUrl": "https://frankiefu.github.io/pica/"
+    }
+  ]
+}

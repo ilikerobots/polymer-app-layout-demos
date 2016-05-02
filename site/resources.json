@@ -1,0 +1,58 @@
+{
+  "templates": [
+    {
+      "name": "TEST DRIVE",
+      "thumbnail": "site/images/test-drive.png",
+      "demoUrl": "templates/test_drive/",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/templates/test_drive/"
+    }
+  ],
+  "demos": [
+    {
+      "name": "Demo 1",
+      "desc": "Using app-header and app-drawer",
+      "demoUrl": "demo/demo1.html",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/demo/demo1.html"
+    },
+    {
+      "name": "Demo 2",
+      "desc": "Using app-header-layout and app-drawer-layout",
+      "demoUrl": "demo/demo2.html",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/demo/demo2.html"
+    },
+    {
+      "name": "Demo 3",
+      "desc": "Using app-header-layout with a scrolling region",
+      "demoUrl": "demo/demo3.html",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/demo/demo3.html"
+    },
+    {
+      "name": "App-Box Document Scroll",
+      "desc": "Using app-boxes with parallax effect",
+      "demoUrl": "app-box/demo/document_scroll.html",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/app-box/demo/document_scroll.html"
+    },
+    {
+      "name": "App-Box Scrolling Region",
+      "desc": "Using app-boxes with scrolling region",
+      "demoUrl": "app-box/demo/scrolling_region.html",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/app-box/demo/scrolling_region.html"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Transform Navigation",
+      "desc": "As more screen space is available, side navigation can transform into tabs.",
+      "demoUrl": "patterns/transform_navigation/index.html",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/patterns/transform-navigation/x_app.html"
+    },
+    {
+      "name": "Expand Card",
+      "desc": "Content cards may expand to take up more horizontal space.",
+      "demoUrl": "patterns/expand_card/index.html",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/patterns/expand-card/index.html"
+    }
+  ],
+  "apps": [
+  ]
+}
