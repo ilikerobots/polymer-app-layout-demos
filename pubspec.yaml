@@ -11,6 +11,8 @@ dependencies:
   polymer_app_layout: 0.0.1
   web_components: ^0.12.0
   dart_to_js_script_rewriter: ^1.0.1
+dev_dependencies:
+  ghpages_generator: 
 transformers:
 - polymer:
     entry_points:
