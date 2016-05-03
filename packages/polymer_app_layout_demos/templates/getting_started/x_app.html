@@ -1,0 +1,41 @@
+<dom-module id="x-app">
+
+    <template>
+
+        <style>
+
+            app-header {
+                background-color: #00897B;
+                color: #fff;
+            }
+
+            app-header paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+        </style>
+
+        <app-drawer-layout>
+
+            <app-drawer>
+                <app-toolbar>Getting Started</app-toolbar>
+            </app-drawer>
+
+            <app-header-layout>
+
+                <app-header reveals effects="waterfall">
+                    <app-toolbar>
+                        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                        <div title>Title</div>
+                    </app-toolbar>
+                </app-header>
+
+                <sample-content size="100"></sample-content>
+
+            </app-header-layout>
+
+        </app-drawer-layout>
+
+    </template>
+
+</dom-module>
