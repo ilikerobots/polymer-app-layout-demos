@@ -1,4 +1,4 @@
-@HtmlImport('x_app.html')
+@HtmlImport('test_app.html')
 library polymer_app_layout_demos.lib.templates.test_drive.test_app;
 
 import 'package:polymer/polymer.dart';
