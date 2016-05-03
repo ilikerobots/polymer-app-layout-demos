@@ -23,6 +23,8 @@ transformers:
     - web/app-box/demo/document_scroll.html
     - web/app-box/demo/scrolling_region.html
     - web/templates/test_drive/index.html
+    - web/templates/getting_started/index.html
+    - web/templates/landing_page/index.html
     - web/patterns/transform_navigation/index.html
     - web/patterns/expand_card/index.html
 - dart_to_js_script_rewriter
