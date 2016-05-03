@@ -16594,6 +16594,118 @@ Example:
 
 <dom-module id="sample-content">
 </dom-module>
+<iron-iconset-svg name="app" size="24">
+    <svg>
+        <defs>
+            <g id="menu">
+                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
+            </g>
+        </defs>
+    </svg>
+</iron-iconset-svg>
+
+<dom-module id="test-app">
+
+    <template>
+
+        <style>
+            app-drawer section {
+                height: 100%;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            app-drawer h2 {
+                margin: 8px 0 0;
+                padding: 18px;
+                font-size: 18px;
+            }
+
+            app-drawer paper-checkbox {
+                display: block;
+                padding: 18px;
+            }
+
+            app-header {
+                color: #fff;
+                background-color: #C62828;
+                --app-header-background-front-layer: {
+                    background-image: url(//app-layout-assets.appspot.com/assets/test-drive.jpg);
+                    background-position: 50% 10%;
+                };
+            }
+
+            div[title] {
+                font-size: 2em;
+            }
+        </style>
+
+        <app-drawer-layout>
+
+            <app-drawer swipe-open="">
+                <section>
+                    <h2>app-header Properties</h2>
+                    <paper-checkbox checked="{{condenses}}">
+                        condenses
+                    </paper-checkbox>
+                    <paper-checkbox checked="{{fixed}}">
+                        fixed
+                    </paper-checkbox>
+                    <paper-checkbox checked="{{reveals}}">
+                        reveals
+                    </paper-checkbox>
+                    <paper-checkbox checked="{{shadow}}">
+                        shadow
+                    </paper-checkbox>
+
+                    <h2>app-header Effects</h2>
+                    <paper-checkbox checked="{{blendBackground}}">
+                        blend-background
+                    </paper-checkbox>
+                    <paper-checkbox checked="{{fadeBackground}}">
+                        fade-background
+                    </paper-checkbox>
+                    <paper-checkbox checked="{{parallaxBackground}}">
+                        parallax-background
+                    </paper-checkbox>
+                    <paper-checkbox checked="{{resizeSnappedTitle}}">
+                        resize-snapped-title
+                    </paper-checkbox>
+                    <paper-checkbox checked="{{resizeTitle}}">
+                        resize-title
+                    </paper-checkbox>
+                    <paper-checkbox checked="{{waterfall}}">
+                        waterfall
+                    </paper-checkbox>
+                </section>
+            </app-drawer>
+
+            <app-header-layout>
+
+                <app-header condenses="[[condenses]]" fixed="[[fixed]]" reveals="[[reveals]]" shadow="[[shadow]]" effects="[[getEffects(blendBackground, fadeBackground, parallaxBackground, resizeSnappedTitle, resizeTitle, waterfall)]]">
+
+                    <app-toolbar>
+                        <paper-icon-button icon="app:menu" drawer-toggle=""></paper-icon-button>
+                        <div condensed-title="">Test Drive app-header</div>
+                    </app-toolbar>
+
+                    <app-toolbar></app-toolbar>
+
+                    <app-toolbar>
+                        <div title="" spacer="">Test Drive</div>
+                    </app-toolbar>
+
+                </app-header>
+
+                <sample-content size="100"></sample-content>
+
+            </app-header-layout>
+
+        </app-drawer-layout>
+    </template>
+
+
+</dom-module>
 <script defer="" src="index.bootstrap.initialize.dart.js"></script><style>
 
     body {
