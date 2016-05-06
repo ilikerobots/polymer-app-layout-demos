@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+  <title>App Drawer Layout Demo1 with Polymer App Layout for Dart</title>
+  <script src="packages/web_components/webcomponents.js"></script>
+  <script>
+    window.Polymer = {dom: 'shadow', lazyRegister: false};
+  </script>
+  <script src="packages/web_components/dart_support.js"></script>
+  <script defer src="demo1.dart" type="application/dart"></script>
+  <script defer src="packages/browser/dart.js"></script>
+
+
+  <style is="custom-style">
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      background-color: #eee;
+    }
+
+    app-toolbar {
+      background-color: #4285f4;
+      color: #fff;
+    }
+
+    app-drawer {
+      --app-drawer-width: 350px;
+      --app-drawer-content-container: {
+        background-color: #B0BEC5;
+      }
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <app-drawer-layout>
+
+    <app-drawer></app-drawer>
+
+    <app-toolbar>
+      <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+    </app-toolbar>
+
+    <sample-content size="100"></sample-content>
+
+  </app-drawer-layout>
+
+</body>
+</html>

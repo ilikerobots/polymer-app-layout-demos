@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>App Header Layout Demo1 with Polymer App Layout for Dart</title>
+  <script src="packages/web_components/webcomponents.js"></script>
+  <script>
+    window.Polymer = {dom: 'shadow', lazyRegister: false};
+  </script>
+  <script src="packages/web_components/dart_support.js"></script>
+  <script defer src="demo1.dart" type="application/dart"></script>
+  <script defer src="packages/browser/dart.js"></script>
+
+  <style is="custom-style">
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      background-color: #eee;
+    }
+
+    app-header {
+      background-color: #4285f4;
+      color: #fff;
+    }
+
+    app-header paper-icon-button {
+      --paper-icon-button-ink-color: white;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <!-- default to use body scroller -->
+  <app-header-layout>
+
+    <app-header effects="waterfall" condenses reveals>
+      <app-toolbar>
+        <paper-icon-button icon="menu"></paper-icon-button>
+        <div title></div>
+        <paper-icon-button icon="search"></paper-icon-button>
+      </app-toolbar>
+      <app-toolbar></app-toolbar>
+      <app-toolbar>
+        <div spacer title>My Drive</div>
+      </app-toolbar>
+    </app-header>
+
+    <div content>
+      <sample-content size="100"></sample-content>
+    </div>
+  
+  </app-header-layout>
+
+</body>
+</html>

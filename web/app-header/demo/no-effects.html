@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>App Header No Effect with Polymer App Layout for Dart</title>
+  <script src="packages/web_components/webcomponents.js"></script>
+  <script>
+    window.Polymer = {dom: 'shadow', lazyRegister: false};
+  </script>
+  <script src="packages/web_components/dart_support.js"></script>
+  <script defer src="no-effects.dart" type="application/dart"></script>
+  <script defer src="packages/browser/dart.js"></script>
+
+  <style is="custom-style">
+
+    body {
+      margin: 0;
+      font-family: arial;
+      background-color: #eee;
+    }
+
+    app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 200px;
+      color: #fff;
+      background-color: #4285f4;
+    }
+
+    sample-content {
+      padding-top: 200px;
+    }
+
+  </style>
+
+</head>
+<body unresolved>
+
+  <app-header condenses reveals>
+    <app-toolbar>
+     <paper-icon-button icon="menu"></paper-icon-button>
+    </app-toolbar>
+  </app-header>
+
+  <sample-content size="100"></sample-content>
+
+</body>
+</html>

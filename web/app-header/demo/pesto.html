@@ -1,0 +1,84 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>App Header Psto with Polymer App Layout for Dart</title>
+  <script src="packages/web_components/webcomponents.js"></script>
+  <script>
+    window.Polymer = {dom: 'shadow', lazyRegister: false};
+  </script>
+  <script src="packages/web_components/dart_support.js"></script>
+  <script defer src="pesto.dart" type="application/dart"></script>
+  <script defer src="packages/browser/dart.js"></script>
+
+  <style is="custom-style">
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      background-color: #eee;
+    }
+
+    app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      color: #fff;
+      background-color: #00AA8D;
+    }
+
+    .top-toolbar,
+    .bottom-toolbar {
+      height: 120px;
+      @apply(--layout-center-center);
+    }
+
+    paper-icon-button {
+      --paper-icon-button-ink-color: white;
+    }
+
+    sample-content {
+      padding-top: 240px;
+    }
+
+    [condensed-title] {
+      height: 80px;
+      max-width: 76px;
+      margin-bottom: -20px;
+      font-size: 16px;
+      background-image: url(//app-layout-assets.appspot.com/assets/pesto/logo_s.png);
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: 76px;
+    }
+
+    [title] {
+      height: 240px;
+      max-width: 240px;
+      margin-bottom: 140px;
+      font-size: 48px;
+      background-image: url(//app-layout-assets.appspot.com/assets/pesto/logo_l.png);
+      background-repeat: no-repeat;
+      background-position: center bottom;
+      background-size: 240px;
+    }
+
+  </style>
+
+</head>
+<body unresolved>
+
+  <app-header effects="waterfall resize-title" condenses fixed>
+    <app-toolbar class="top-toolbar">
+      <div condensed-title></div>
+    </app-toolbar>
+    <app-toolbar class="bottom-toolbar">
+      <div title></div>
+    </app-toolbar>
+  </app-header>
+
+  <sample-content size="100"></sample-content>
+
+</body>
+</html>

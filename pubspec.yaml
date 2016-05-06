@@ -1,6 +1,6 @@
 name: polymer_app_layout_demos
 version: 0.0.1
-description: Web demos of the polymer_app_layout package
+description: Web demo of the polymer_app_layout package
 
 environment:
   sdk: '>1.16.0-dev.5.5 <2.0.0' #https://github.com/dart-lang/sdk/issues/26228
@@ -8,7 +8,7 @@ environment:
 dependencies:
   browser: ^0.10.0
   polymer: ^1.0.0-rc.16
-  polymer_app_layout: 0.0.1
+  polymer_app_layout: ^0.0.1
   web_components: ^0.12.0
   dart_to_js_script_rewriter: ^1.0.1
 dev_dependencies:
@@ -20,8 +20,28 @@ transformers:
     - web/demo/demo1.html
     - web/demo/demo2.html
     - web/demo/demo3.html
+
     - web/app-box/demo/document_scroll.html
     - web/app-box/demo/scrolling_region.html
+    - web/app-drawer/demo/demo1.html
+    - web/app-drawer/demo/demo2.html
+    - web/app-drawer-layout/demo/demo1.html
+    - web/app-drawer-layout/demo/demo2.html
+    - web/app-header/demo/contacts.html
+    - web/app-header/demo/demo1.html
+    - web/app-header/demo/demo2.html
+    - web/app-header/demo/demo3.html
+    - web/app-header/demo/give.html
+    - web/app-header/demo/music.html
+    - web/app-header/demo/no-effects.html
+    - web/app-header/demo/notes.html
+    - web/app-header/demo/pesto.html
+    - web/app-header-layout/demo/demo1.html
+    - web/app-header-layout/demo/demo2.html
+    - web/app-header-layout/demo/music.html
+    - web/app-scrollpos-control/demo/index.html
+    - web/app-toolbar/demo/index.html
+
     - web/templates/test_drive/index.html
     - web/templates/getting_started/index.html
     - web/templates/landing_page/index.html

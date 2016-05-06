@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>App Scrollpos Control with Polymer App Layout for Dart</title>
+  <script src="packages/web_components/webcomponents.js"></script>
+  <script>
+    window.Polymer = {dom: 'shadow', lazyRegister: false};
+  </script>
+  <script src="packages/web_components/dart_support.js"></script>
+  <script defer src="index.dart" type="application/dart"></script>
+  <script defer src="packages/browser/dart.js"></script>
+
+  <style is="custom-style">
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      background-color: #eee;
+    }
+
+    app-toolbar {
+      background-color: #4285f4;
+      color: #fff;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <template is="dom-bind">
+
+    <app-drawer-layout>
+
+      <app-drawer>
+        <paper-menu selected="{{page}}">
+          <paper-item>Home</paper-item>
+          <paper-item>About</paper-item>
+          <paper-item>Schedule</paper-item>
+          <paper-item>Account</paper-item>
+        </paper-menu>
+      </app-drawer>
+
+      <div>
+        <app-toolbar>
+          <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+        </app-toolbar>
+        <iron-pages selected="{{page}}">
+          <sample-content size="100"></sample-content>
+          <sample-content size="100"></sample-content>
+          <sample-content size="100"></sample-content>
+          <sample-content size="100"></sample-content>
+        </iron-pages>
+      </div>
+
+    </app-drawer-layout>
+
+    <app-scrollpos-control selected="{{page}}"></app-scrollpos-control>
+
+  </template>
+
+</body>
+</html>
