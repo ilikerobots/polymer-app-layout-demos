@@ -22,34 +22,142 @@
   ],
   "demos": [
     {
-      "name": "Demo 1",
+      "name": "General Demo 1",
       "desc": "Using app-header and app-drawer",
       "demoUrl": "demo/demo1.html",
       "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/demo/demo1.html"
     },
     {
-      "name": "Demo 2",
+      "name": "General Demo 2",
       "desc": "Using app-header-layout and app-drawer-layout",
       "demoUrl": "demo/demo2.html",
       "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/demo/demo2.html"
     },
     {
-      "name": "Demo 3",
+      "name": "General Demo 3",
       "desc": "Using app-header-layout with a scrolling region",
       "demoUrl": "demo/demo3.html",
       "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/demo/demo3.html"
     },
     {
-      "name": "App-Box Document Scroll",
+      "name": "app-box Document Scroll",
       "desc": "Using app-boxes with parallax effect",
       "demoUrl": "app-box/demo/document_scroll.html",
       "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/app-box/demo/document_scroll.html"
     },
     {
-      "name": "App-Box Scrolling Region",
+      "name": "app-box Scrolling Region",
       "desc": "Using app-boxes with scrolling region",
       "demoUrl": "app-box/demo/scrolling_region.html",
       "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/app-box/demo/scrolling_region.html"
+    },
+    {
+      "name": "app-drawer General Demo #1",
+      "desc": "",
+      "demoUrl": "app-drawer/demo/demo1.html",
+      "sourceUrl": "app-drawer/demo/demo1.html"
+    },
+    {
+      "name": "app-drawer General Demo #2",
+      "desc": "",
+      "demoUrl": "app-drawer/demo/demo2.html",
+      "sourceUrl": "app-drawer/demo/demo2.html"
+    },
+    {
+      "name": "app-drawer-layout General Demo #1",
+      "desc": "",
+      "demoUrl": "app-drawer-layout/demo/demo1.html",
+      "sourceUrl": "app-drawer-layout/demo/demo1.html"
+    },
+    {
+      "name": "app-drawer-layout General Demo #2",
+      "desc": "",
+      "demoUrl": "app-drawer-layout/demo/demo2.html",
+      "sourceUrl": "app-drawer-layout/demo/demo2.html"
+    },
+    {
+      "name": "app-header Contacts Page",
+      "desc": "",
+      "demoUrl": "app-header/demo/contacts.html",
+      "sourceUrl": "app-header/demo/contacts.html"
+    },
+    {
+      "name": "app-header General Demo #1",
+      "desc": "",
+      "demoUrl": "app-header/demo/demo1.html",
+      "sourceUrl": "app-header/demo/demo1.html"
+    },
+    {
+      "name": "app-header General Demo #2",
+      "desc": "",
+      "demoUrl": "app-header/demo/demo2.html",
+      "sourceUrl": "app-header/demo/demo2.html"
+    },
+    {
+      "name": "app-header General Demo #3",
+      "desc": "",
+      "demoUrl": "app-header/demo/demo3.html",
+      "sourceUrl": "app-header/demo/demo3.html"
+    },
+    {
+      "name": "app-header Give Page",
+      "desc": "",
+      "demoUrl": "app-header/demo/give.html",
+      "sourceUrl": "app-header/demo/give.html"
+    },
+    {
+      "name": "app-header Music Page",
+      "desc": "",
+      "demoUrl": "app-header/demo/music.html",
+      "sourceUrl": "app-header/demo/music.html"
+    },
+    {
+      "name": "app-header Without Effects",
+      "desc": "",
+      "demoUrl": "app-header/demo/no-effects.html",
+      "sourceUrl": "app-header/demo/no-effects.html"
+    },
+    {
+      "name": "app-header Notes Page",
+      "desc": "",
+      "demoUrl": "app-header/demo/notes.html",
+      "sourceUrl": "app-header/demo/notes.html"
+    },
+    {
+      "name": "app-header Organization Page",
+      "desc": "",
+      "demoUrl": "app-header/demo/pesto.html",
+      "sourceUrl": "app-header/demo/pesto.html"
+    },
+    {
+      "name": "app-header-layout General Demo #1",
+      "desc": "",
+      "demoUrl": "app-header-layout/demo/demo1.html",
+      "sourceUrl": "app-header-layout/demo/demo1.html"
+    },
+    {
+      "name": "app-header-layout General Demo #2",
+      "desc": "",
+      "demoUrl": "app-header-layout/demo/demo2.html",
+      "sourceUrl": "app-header-layout/demo/demo2.html"
+    },
+    {
+      "name": "app-header-layout Music Page",
+      "desc": "",
+      "demoUrl": "app-header-layout/demo/music.html",
+      "sourceUrl": "app-header-layout/demo/music.html"
+    },
+    {
+      "name": "app-scrollpos-control General Demo #1",
+      "desc": "",
+      "demoUrl": "app-scrollpos-control/demo/index.html",
+      "sourceUrl": "app-scrollpos-control/demo/index.html"
+    },
+    {
+      "name": "app-toolbar General Demo #1",
+      "desc": "",
+      "demoUrl": "app-toolbar/demo/index.html",
+      "sourceUrl": "app-toolbar/demo/index.html"
     }
   ],
   "patterns": [
