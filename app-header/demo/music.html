@@ -12270,7 +12270,7 @@ Custom property              | Description                  | Default
 -----------------------------|------------------------------|-----------------------
 `--app-toolbar-font-size`    | Toolbar font size            | 20px
 
-@demo app-toolbar/demo.html
+@demo app-toolbar/demo/index.html
 -->
 
 <dom-module id="app-toolbar">
@@ -12567,7 +12567,7 @@ Custom property              | Description                  | Default
 <script>
   Polymer.AppLayout = Polymer.AppLayout || {};
 
-  Polymer.AppLayout.scrollEffects = Polymer.AppLayout.scrollEffects || {};
+  Polymer.AppLayout._scrollEffects = Polymer.AppLayout._scrollEffects || {};
 
   Polymer.AppLayout.scrollTimingFunction = function easeOutQuad(t, b, c, d) {
     t /= d;
@@ -12575,7 +12575,21 @@ Custom property              | Description                  | Default
   };
 
   /**
-   * Helper function that scrolls to a particular set of coordinates in a scroll target.
+   * Registers a scroll effect to be used in elements that implement the 
+   * `Polymer.AppScrollEffectsBehavior` behavior.
+   *
+   * @param {string} effectName The effect name.
+   * @param {Object} effectDef The effect definition.
+   */
+  Polymer.AppLayout.registerEffect = function registerEffect(effectName, effectDef) {
+    if (Polymer.AppLayout._scrollEffects[effectName] != null) {
+      throw new Error('effect `'+ effectName + '` is already registered.');
+    }
+    Polymer.AppLayout._scrollEffects[effectName] = effectDef;
+  };
+
+  /**
+   * Scrolls to a particular set of coordinates in a scroll target.
    * If the scroll target is not defined, then it would use the main document as the target.
    *
    * To scroll in a smooth fashion, you can set the option `behavior: 'smooth'`. e.g.
@@ -12707,11 +12721,12 @@ Custom property              | Description                  | Default
    * based on the scroll position.
    *
    * A scroll effect definition is an object with `setUp()`, `tearDown()` and `run()` functions.
-   * The effect name is used as the key to register the definition in the `Polymer.AppLayout.scrollEffects`
-   * namespace. For example, let's define an effect that resizes the header's logo:
+   * 
+   * To register the effect, you can use `Polymer.AppLayout.registerEffect(effectName, effectDef)`
+   * For example, let's define an effect that resizes the header's logo:
    *
    * ```js
-   * Polymer.AppLayout.scrollEffects.logo = {
+   * Polymer.AppLayout.registerEffect('resizable-logo', {
    *   setUp: function(config) {
    *     // the effect's config is passed to the setUp.
    *     this._fxResizeLogo = { logo: Polymer.dom(this).querySelector('[logo]') };
@@ -12726,12 +12741,12 @@ Custom property              | Description                  | Default
    *      // clean up and reset of states
    *      delete this._fxResizeLogo;
    *   }
-   * };
+   * });
    * ```
    * Now, you can consume the effect:
    *
    * ```html
-   * <app-header id="appHeader" effects="logo">
+   * <app-header id="appHeader" effects="resizable-logo">
    *   <img logo src="logo.svg">
    * </app-header>
    * ```
@@ -12739,7 +12754,7 @@ Custom property              | Description                  | Default
    * ### Imperative API
    *
    * ```js
-   * var logoEffect = appHeader.createEffect('logo', effectConfig);
+   * var logoEffect = appHeader.createEffect('resizable-logo', effectConfig);
    * // run the effect: logoEffect.run(progress);
    * // tear down the effect: logoEffect.tearDown();
    * ```
@@ -12771,8 +12786,7 @@ Custom property              | Description                  | Default
        * e.g. `waterfall parallax-background` installs the `waterfall` and `parallax-background`.
        */
       effects: {
-        type: String,
-        value: ''
+        type: String
       },
 
       /**
@@ -12865,39 +12879,33 @@ Custom property              | Description                  | Default
       return Math.max(0, this._scrollTop);
     },
 
-    created: function() {
-      this._effectsRunFn = [];
-      this._effects = [];
-    },
-
     detached: function() {
       this._tearDownEffects();
     },
 
     /**
-     * Creates an effect object from an effect name and configuration that can be used to run
+     * Creates an effect object from an effect's name that can be used to run
      * effects programmatically.
      *
      * @method createEffect
-     * @param {string} effectName The name of an effect defined in `Polymer.AppLayout.scrollEffects`
-     * @param {Object=} effectConfig The effect config object if the effect accepts config
-     *   values. (Optional)
-     * @return {Object} The effect object. This object has the following interface:
+     * @param {string} effectName The effect's name registered via `Polymer.AppLayout.registerEffect`.
+     * @param {Object=} effectConfig The effect config object. (Optional)
+     * @return {Object} An effect object with the following functions:
      *
-     *  * `obj.setUp()`, Sets up the requirements for the effect.
+     *  * `effect.setUp()`, Sets up the requirements for the effect.
      *       This function is called automatically before the `effect` function returns.
-     *  * `obj.run(progress, y)`, Runs the effect given a `progress`.
-     *  * `obj.tearDown()`, Cleans up any DOM nodes or element references used by the effect.
+     *  * `effect.run(progress, y)`, Runs the effect given a `progress`.
+     *  * `effect.tearDown()`, Cleans up any DOM nodes or element references used by the effect.
      *
      * Example:
      * ```js
-     * var parallax = obj.createEffect('parallax-background');
+     * var parallax = element.createEffect('parallax-background');
      * // runs the effect
      * parallax.run(0.5, 0);
      * ```
      */
     createEffect: function(effectName, effectConfig) {
-      var effectDef = Polymer.AppLayout.scrollEffects[effectName];
+      var effectDef = Polymer.AppLayout._scrollEffects[effectName];
       if (!effectDef) {
         throw new ReferenceError(this._getUndefinedMsg(effectName));
       }
@@ -12918,7 +12926,7 @@ Custom property              | Description                  | Default
       effects.split(' ').forEach(function(effectName) {
         var effectDef;
         if (effectName !== '') {
-          if ((effectDef = Polymer.AppLayout.scrollEffects[effectName])) {
+          if ((effectDef = Polymer.AppLayout._scrollEffects[effectName])) {
             this._effects.push(this._boundEffect(effectDef, effectsConfig[effectName]));
           } else {
             this._warn(this._logf('_effectsChanged', this._getUndefinedMsg(effectName)));
@@ -12965,7 +12973,7 @@ Custom property              | Description                  | Default
      * Sets up the effects.
      */
     _setUpEffect: function() {
-      if (this.isAttached) {
+      if (this.isAttached && this._effects) {
         this._effectsRunFn = [];
         this._effects.forEach(function(effectDef) {
           // install the effect only if no error was reported
@@ -12980,9 +12988,11 @@ Custom property              | Description                  | Default
      * Tears down the effects.
      */
     _tearDownEffects: function() {
-      this._effects.forEach(function(effectDef) {
-        effectDef.tearDown();
-      });
+      if (this._effects) {
+        this._effects.forEach(function(effectDef) {
+          effectDef.tearDown();
+        });
+      }
       this._effectsRunFn = [];
       this._effects = [];
     },
@@ -12994,9 +13004,11 @@ Custom property              | Description                  | Default
      * @param {number} y The top position of the current element relative to the viewport.
      */
     _runEffects: function(p, y) {
-      this._effectsRunFn.forEach(function(run) {
-        run(p, y);
-      });
+      if (this._effectsRunFn) {
+        this._effectsRunFn.forEach(function(run) {
+          run(p, y);
+        });
+      }
     },
 
     /**
@@ -13414,17 +13426,78 @@ Mixin | Description | Default
 
 <script>
   /**
+   * While scrolling down, fade in the rear background layer and fade out the front background
+   * layer (opacity interpolated based on scroll position).
+   */
+  Polymer.AppLayout.registerEffect('blend-background', {
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    setUp: function setUp() {
+      this.$.backgroundFrontLayer.style.willChange = 'opacity';
+      this.$.backgroundFrontLayer.style.webkitTransform = 'translateZ(0)';
+      this.$.backgroundRearLayer.style.willChange = 'opacity';
+      this.$.backgroundRearLayer.style.webkitTransform = 'translateZ(0)';
+      this.$.backgroundRearLayer.style.opacity = 0;
+    },
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    run: function run(p, y) {
+      this.$.backgroundFrontLayer.style.opacity = 1 - p;
+      this.$.backgroundRearLayer.style.opacity = p;
+    }
+  });
+</script>
+
+
+
+
+
+<script>
+  /**
+   * Upon scrolling past a threshold, fade in the rear background layer and fade out the front
+   * background layer (opacity CSS transitioned over time).
+   */
+  Polymer.AppLayout.registerEffect('fade-background', {
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    setUp: function setUp(config) {
+      var duration = config.duration || '0.5s';
+      this.$.backgroundFrontLayer.style.willChange = 'opacity';
+      this.$.backgroundFrontLayer.style.webkitTransform = 'translateZ(0)';
+      this.$.backgroundFrontLayer.style.transitionProperty = 'opacity';
+      this.$.backgroundFrontLayer.style.transitionDuration = duration;
+      this.$.backgroundRearLayer.style.willChange = 'opacity';
+      this.$.backgroundRearLayer.style.webkitTransform = 'translateZ(0)';
+      this.$.backgroundRearLayer.style.transitionProperty = 'opacity';
+      this.$.backgroundRearLayer.style.transitionDuration = duration;
+    },
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    run: function run(p, y) {
+      if (p >= 1) {
+        this.$.backgroundFrontLayer.style.opacity = 0;
+        this.$.backgroundRearLayer.style.opacity = 1;
+      } else {
+        this.$.backgroundFrontLayer.style.opacity = 1;
+        this.$.backgroundRearLayer.style.opacity = 0;
+      }
+    }
+  });
+</script>
+
+
+
+
+
+<script>
+  /**
    * Toggles the shadow property in app-header when content is scrolled to create a sense of depth
    * between the element and the content underneath.
    */
-  Polymer.AppLayout.scrollEffects.waterfall = {
+  Polymer.AppLayout.registerEffect('waterfall', {
     /**
      *  @this Polymer.AppLayout.ElementWithBackground
      */
     run: function run(p, y) {
       this.shadow = this.isOnScreen() && this.isContentBelow();
     }
-  };
+  });
 </script>
 
 
@@ -13443,7 +13516,7 @@ Mixin | Description | Default
      * Transform the font size of a designated title element between two values based on the scroll
      * position.
      */
-    Polymer.AppLayout.scrollEffects['resize-title'] = {
+    Polymer.AppLayout.registerEffect('resize-title', {
       /** @this Polymer.AppLayout.ElementWithBackground */
       setUp: function setUp() {
         var title = Polymer.dom(this).querySelector('[title]');
@@ -13506,34 +13579,8 @@ Mixin | Description | Default
                 'scale3d(' + scale + ', ' + scale + ', 1)', fx.title);
           }, this);
       }
-    };
+    });
   })();
-</script>
-
-
-
-
-
-<script>
-  /**
-   * While scrolling down, fade in the rear background layer and fade out the front background
-   * layer (opacity interpolated based on scroll position).
-   */
-  Polymer.AppLayout.scrollEffects['blend-background'] = {
-    /** @this Polymer.AppLayout.ElementWithBackground */
-    setUp: function setUp() {
-      this.$.backgroundFrontLayer.style.willChange = 'opacity';
-      this.$.backgroundFrontLayer.style.webkitTransform = 'translateZ(0)';
-      this.$.backgroundRearLayer.style.willChange = 'opacity';
-      this.$.backgroundRearLayer.style.webkitTransform = 'translateZ(0)';
-      this.$.backgroundRearLayer.style.opacity = 0;
-    },
-    /** @this Polymer.AppLayout.ElementWithBackground */
-    run: function run(p, y) {
-      this.$.backgroundFrontLayer.style.opacity = 1 - p;
-      this.$.backgroundRearLayer.style.opacity = p;
-    }
-  };
 </script>
 
 
@@ -13544,7 +13591,7 @@ Mixin | Description | Default
   /**
    * Vertically translate the background based on a factor of the scroll position.
    */
-  Polymer.AppLayout.scrollEffects['parallax-background'] = {
+  Polymer.AppLayout.registerEffect('parallax-background', {
     /**
      * @param {{scalar: string}} config
      * @this Polymer.AppLayout.ElementWithBackground
@@ -13576,42 +13623,7 @@ Mixin | Description | Default
         this.transform('translate3d(0px, ' + (this._deltaBg * Math.min(1, p)) + 'px, 0px)', this.$.backgroundRearLayer);
       }
     }
-  };
-</script>
-
-
-
-
-
-<script>
-  /**
-   * Upon scrolling past a threshold, fade in the rear background layer and fade out the front
-   * background layer (opacity CSS transitioned over time).
-   */
-  Polymer.AppLayout.scrollEffects['fade-background'] = {
-    /** @this Polymer.AppLayout.ElementWithBackground */
-    setUp: function setUp(config) {
-      var duration = config.duration || '0.5s';
-      this.$.backgroundFrontLayer.style.willChange = 'opacity';
-      this.$.backgroundFrontLayer.style.webkitTransform = 'translateZ(0)';
-      this.$.backgroundFrontLayer.style.transitionProperty = 'opacity';
-      this.$.backgroundFrontLayer.style.transitionDuration = duration;
-      this.$.backgroundRearLayer.style.willChange = 'opacity';
-      this.$.backgroundRearLayer.style.webkitTransform = 'translateZ(0)';
-      this.$.backgroundRearLayer.style.transitionProperty = 'opacity';
-      this.$.backgroundRearLayer.style.transitionDuration = duration;
-    },
-    /** @this Polymer.AppLayout.ElementWithBackground */
-    run: function run(p, y) {
-      if (p >= 1) {
-        this.$.backgroundFrontLayer.style.opacity = 0;
-        this.$.backgroundRearLayer.style.opacity = 1;
-      } else {
-        this.$.backgroundFrontLayer.style.opacity = 1;
-        this.$.backgroundRearLayer.style.opacity = 0;
-      }
-    }
-  };
+  });
 </script>
 
 
@@ -13626,7 +13638,7 @@ Mixin | Description | Default
   /**
    * Shorthand for the waterfall, resize-title, blend-background, and parallax-background effects.
    */
-  Polymer.AppLayout.scrollEffects.material = {
+  Polymer.AppLayout.registerEffect('material', {
     /**
      * @this Polymer.AppLayout.ElementWithBackground
      */
@@ -13634,22 +13646,8 @@ Mixin | Description | Default
       this.effects = 'waterfall resize-title blend-background parallax-background';
       return false;
     }
-  };
+  });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -13664,7 +13662,7 @@ Mixin | Description | Default
    * Upon scrolling past a threshold, CSS transition the font size of a designated title element
    * between two values.
    */
-  Polymer.AppLayout.scrollEffects['resize-snapped-title'] = {
+  Polymer.AppLayout.registerEffect('resize-snapped-title', {
     /**
      * @this Polymer.AppLayout.ElementWithBackground
      */
@@ -13710,8 +13708,24 @@ Mixin | Description | Default
         fx.condensedTitle.style.opacity = 0;
       }
     }
-  };
+  });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13795,7 +13809,7 @@ or when the scrollable element is scrolled to the top.
 ## Scroll effects
 
 Scroll effects are _optional_ visual effects applied in app-header based on scroll position. For example,
-The [Material Design scrollig techniques](https://www.google.com/design/spec/patterns/scrolling-techniques.html)
+The [Material Design scrolling techniques](https://www.google.com/design/spec/patterns/scrolling-techniques.html)
 recommends effects that can be installed via the `effects` property. e.g.
 
 ```html

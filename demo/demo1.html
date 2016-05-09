@@ -11671,7 +11671,7 @@ Custom property              | Description                  | Default
 -----------------------------|------------------------------|-----------------------
 `--app-toolbar-font-size`    | Toolbar font size            | 20px
 
-@demo app-toolbar/demo.html
+@demo app-toolbar/demo/index.html
 -->
 
 <dom-module id="app-toolbar">
@@ -11968,7 +11968,7 @@ Custom property              | Description                  | Default
 <script>
   Polymer.AppLayout = Polymer.AppLayout || {};
 
-  Polymer.AppLayout.scrollEffects = Polymer.AppLayout.scrollEffects || {};
+  Polymer.AppLayout._scrollEffects = Polymer.AppLayout._scrollEffects || {};
 
   Polymer.AppLayout.scrollTimingFunction = function easeOutQuad(t, b, c, d) {
     t /= d;
@@ -11976,7 +11976,21 @@ Custom property              | Description                  | Default
   };
 
   /**
-   * Helper function that scrolls to a particular set of coordinates in a scroll target.
+   * Registers a scroll effect to be used in elements that implement the 
+   * `Polymer.AppScrollEffectsBehavior` behavior.
+   *
+   * @param {string} effectName The effect name.
+   * @param {Object} effectDef The effect definition.
+   */
+  Polymer.AppLayout.registerEffect = function registerEffect(effectName, effectDef) {
+    if (Polymer.AppLayout._scrollEffects[effectName] != null) {
+      throw new Error('effect `'+ effectName + '` is already registered.');
+    }
+    Polymer.AppLayout._scrollEffects[effectName] = effectDef;
+  };
+
+  /**
+   * Scrolls to a particular set of coordinates in a scroll target.
    * If the scroll target is not defined, then it would use the main document as the target.
    *
    * To scroll in a smooth fashion, you can set the option `behavior: 'smooth'`. e.g.
@@ -12108,11 +12122,12 @@ Custom property              | Description                  | Default
    * based on the scroll position.
    *
    * A scroll effect definition is an object with `setUp()`, `tearDown()` and `run()` functions.
-   * The effect name is used as the key to register the definition in the `Polymer.AppLayout.scrollEffects`
-   * namespace. For example, let's define an effect that resizes the header's logo:
+   * 
+   * To register the effect, you can use `Polymer.AppLayout.registerEffect(effectName, effectDef)`
+   * For example, let's define an effect that resizes the header's logo:
    *
    * ```js
-   * Polymer.AppLayout.scrollEffects.logo = {
+   * Polymer.AppLayout.registerEffect('resizable-logo', {
    *   setUp: function(config) {
    *     // the effect's config is passed to the setUp.
    *     this._fxResizeLogo = { logo: Polymer.dom(this).querySelector('[logo]') };
@@ -12127,12 +12142,12 @@ Custom property              | Description                  | Default
    *      // clean up and reset of states
    *      delete this._fxResizeLogo;
    *   }
-   * };
+   * });
    * ```
    * Now, you can consume the effect:
    *
    * ```html
-   * <app-header id="appHeader" effects="logo">
+   * <app-header id="appHeader" effects="resizable-logo">
    *   <img logo src="logo.svg">
    * </app-header>
    * ```
@@ -12140,7 +12155,7 @@ Custom property              | Description                  | Default
    * ### Imperative API
    *
    * ```js
-   * var logoEffect = appHeader.createEffect('logo', effectConfig);
+   * var logoEffect = appHeader.createEffect('resizable-logo', effectConfig);
    * // run the effect: logoEffect.run(progress);
    * // tear down the effect: logoEffect.tearDown();
    * ```
@@ -12172,8 +12187,7 @@ Custom property              | Description                  | Default
        * e.g. `waterfall parallax-background` installs the `waterfall` and `parallax-background`.
        */
       effects: {
-        type: String,
-        value: ''
+        type: String
       },
 
       /**
@@ -12266,39 +12280,33 @@ Custom property              | Description                  | Default
       return Math.max(0, this._scrollTop);
     },
 
-    created: function() {
-      this._effectsRunFn = [];
-      this._effects = [];
-    },
-
     detached: function() {
       this._tearDownEffects();
     },
 
     /**
-     * Creates an effect object from an effect name and configuration that can be used to run
+     * Creates an effect object from an effect's name that can be used to run
      * effects programmatically.
      *
      * @method createEffect
-     * @param {string} effectName The name of an effect defined in `Polymer.AppLayout.scrollEffects`
-     * @param {Object=} effectConfig The effect config object if the effect accepts config
-     *   values. (Optional)
-     * @return {Object} The effect object. This object has the following interface:
+     * @param {string} effectName The effect's name registered via `Polymer.AppLayout.registerEffect`.
+     * @param {Object=} effectConfig The effect config object. (Optional)
+     * @return {Object} An effect object with the following functions:
      *
-     *  * `obj.setUp()`, Sets up the requirements for the effect.
+     *  * `effect.setUp()`, Sets up the requirements for the effect.
      *       This function is called automatically before the `effect` function returns.
-     *  * `obj.run(progress, y)`, Runs the effect given a `progress`.
-     *  * `obj.tearDown()`, Cleans up any DOM nodes or element references used by the effect.
+     *  * `effect.run(progress, y)`, Runs the effect given a `progress`.
+     *  * `effect.tearDown()`, Cleans up any DOM nodes or element references used by the effect.
      *
      * Example:
      * ```js
-     * var parallax = obj.createEffect('parallax-background');
+     * var parallax = element.createEffect('parallax-background');
      * // runs the effect
      * parallax.run(0.5, 0);
      * ```
      */
     createEffect: function(effectName, effectConfig) {
-      var effectDef = Polymer.AppLayout.scrollEffects[effectName];
+      var effectDef = Polymer.AppLayout._scrollEffects[effectName];
       if (!effectDef) {
         throw new ReferenceError(this._getUndefinedMsg(effectName));
       }
@@ -12319,7 +12327,7 @@ Custom property              | Description                  | Default
       effects.split(' ').forEach(function(effectName) {
         var effectDef;
         if (effectName !== '') {
-          if ((effectDef = Polymer.AppLayout.scrollEffects[effectName])) {
+          if ((effectDef = Polymer.AppLayout._scrollEffects[effectName])) {
             this._effects.push(this._boundEffect(effectDef, effectsConfig[effectName]));
           } else {
             this._warn(this._logf('_effectsChanged', this._getUndefinedMsg(effectName)));
@@ -12366,7 +12374,7 @@ Custom property              | Description                  | Default
      * Sets up the effects.
      */
     _setUpEffect: function() {
-      if (this.isAttached) {
+      if (this.isAttached && this._effects) {
         this._effectsRunFn = [];
         this._effects.forEach(function(effectDef) {
           // install the effect only if no error was reported
@@ -12381,9 +12389,11 @@ Custom property              | Description                  | Default
      * Tears down the effects.
      */
     _tearDownEffects: function() {
-      this._effects.forEach(function(effectDef) {
-        effectDef.tearDown();
-      });
+      if (this._effects) {
+        this._effects.forEach(function(effectDef) {
+          effectDef.tearDown();
+        });
+      }
       this._effectsRunFn = [];
       this._effects = [];
     },
@@ -12395,9 +12405,11 @@ Custom property              | Description                  | Default
      * @param {number} y The top position of the current element relative to the viewport.
      */
     _runEffects: function(p, y) {
-      this._effectsRunFn.forEach(function(run) {
-        run(p, y);
-      });
+      if (this._effectsRunFn) {
+        this._effectsRunFn.forEach(function(run) {
+          run(p, y);
+        });
+      }
     },
 
     /**
@@ -12425,17 +12437,78 @@ Custom property              | Description                  | Default
 
 <script>
   /**
+   * While scrolling down, fade in the rear background layer and fade out the front background
+   * layer (opacity interpolated based on scroll position).
+   */
+  Polymer.AppLayout.registerEffect('blend-background', {
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    setUp: function setUp() {
+      this.$.backgroundFrontLayer.style.willChange = 'opacity';
+      this.$.backgroundFrontLayer.style.webkitTransform = 'translateZ(0)';
+      this.$.backgroundRearLayer.style.willChange = 'opacity';
+      this.$.backgroundRearLayer.style.webkitTransform = 'translateZ(0)';
+      this.$.backgroundRearLayer.style.opacity = 0;
+    },
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    run: function run(p, y) {
+      this.$.backgroundFrontLayer.style.opacity = 1 - p;
+      this.$.backgroundRearLayer.style.opacity = p;
+    }
+  });
+</script>
+
+
+
+
+
+<script>
+  /**
+   * Upon scrolling past a threshold, fade in the rear background layer and fade out the front
+   * background layer (opacity CSS transitioned over time).
+   */
+  Polymer.AppLayout.registerEffect('fade-background', {
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    setUp: function setUp(config) {
+      var duration = config.duration || '0.5s';
+      this.$.backgroundFrontLayer.style.willChange = 'opacity';
+      this.$.backgroundFrontLayer.style.webkitTransform = 'translateZ(0)';
+      this.$.backgroundFrontLayer.style.transitionProperty = 'opacity';
+      this.$.backgroundFrontLayer.style.transitionDuration = duration;
+      this.$.backgroundRearLayer.style.willChange = 'opacity';
+      this.$.backgroundRearLayer.style.webkitTransform = 'translateZ(0)';
+      this.$.backgroundRearLayer.style.transitionProperty = 'opacity';
+      this.$.backgroundRearLayer.style.transitionDuration = duration;
+    },
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    run: function run(p, y) {
+      if (p >= 1) {
+        this.$.backgroundFrontLayer.style.opacity = 0;
+        this.$.backgroundRearLayer.style.opacity = 1;
+      } else {
+        this.$.backgroundFrontLayer.style.opacity = 1;
+        this.$.backgroundRearLayer.style.opacity = 0;
+      }
+    }
+  });
+</script>
+
+
+
+
+
+<script>
+  /**
    * Toggles the shadow property in app-header when content is scrolled to create a sense of depth
    * between the element and the content underneath.
    */
-  Polymer.AppLayout.scrollEffects.waterfall = {
+  Polymer.AppLayout.registerEffect('waterfall', {
     /**
      *  @this Polymer.AppLayout.ElementWithBackground
      */
     run: function run(p, y) {
       this.shadow = this.isOnScreen() && this.isContentBelow();
     }
-  };
+  });
 </script>
 
 
@@ -12454,7 +12527,7 @@ Custom property              | Description                  | Default
      * Transform the font size of a designated title element between two values based on the scroll
      * position.
      */
-    Polymer.AppLayout.scrollEffects['resize-title'] = {
+    Polymer.AppLayout.registerEffect('resize-title', {
       /** @this Polymer.AppLayout.ElementWithBackground */
       setUp: function setUp() {
         var title = Polymer.dom(this).querySelector('[title]');
@@ -12517,34 +12590,8 @@ Custom property              | Description                  | Default
                 'scale3d(' + scale + ', ' + scale + ', 1)', fx.title);
           }, this);
       }
-    };
+    });
   })();
-</script>
-
-
-
-
-
-<script>
-  /**
-   * While scrolling down, fade in the rear background layer and fade out the front background
-   * layer (opacity interpolated based on scroll position).
-   */
-  Polymer.AppLayout.scrollEffects['blend-background'] = {
-    /** @this Polymer.AppLayout.ElementWithBackground */
-    setUp: function setUp() {
-      this.$.backgroundFrontLayer.style.willChange = 'opacity';
-      this.$.backgroundFrontLayer.style.webkitTransform = 'translateZ(0)';
-      this.$.backgroundRearLayer.style.willChange = 'opacity';
-      this.$.backgroundRearLayer.style.webkitTransform = 'translateZ(0)';
-      this.$.backgroundRearLayer.style.opacity = 0;
-    },
-    /** @this Polymer.AppLayout.ElementWithBackground */
-    run: function run(p, y) {
-      this.$.backgroundFrontLayer.style.opacity = 1 - p;
-      this.$.backgroundRearLayer.style.opacity = p;
-    }
-  };
 </script>
 
 
@@ -12555,7 +12602,7 @@ Custom property              | Description                  | Default
   /**
    * Vertically translate the background based on a factor of the scroll position.
    */
-  Polymer.AppLayout.scrollEffects['parallax-background'] = {
+  Polymer.AppLayout.registerEffect('parallax-background', {
     /**
      * @param {{scalar: string}} config
      * @this Polymer.AppLayout.ElementWithBackground
@@ -12587,42 +12634,7 @@ Custom property              | Description                  | Default
         this.transform('translate3d(0px, ' + (this._deltaBg * Math.min(1, p)) + 'px, 0px)', this.$.backgroundRearLayer);
       }
     }
-  };
-</script>
-
-
-
-
-
-<script>
-  /**
-   * Upon scrolling past a threshold, fade in the rear background layer and fade out the front
-   * background layer (opacity CSS transitioned over time).
-   */
-  Polymer.AppLayout.scrollEffects['fade-background'] = {
-    /** @this Polymer.AppLayout.ElementWithBackground */
-    setUp: function setUp(config) {
-      var duration = config.duration || '0.5s';
-      this.$.backgroundFrontLayer.style.willChange = 'opacity';
-      this.$.backgroundFrontLayer.style.webkitTransform = 'translateZ(0)';
-      this.$.backgroundFrontLayer.style.transitionProperty = 'opacity';
-      this.$.backgroundFrontLayer.style.transitionDuration = duration;
-      this.$.backgroundRearLayer.style.willChange = 'opacity';
-      this.$.backgroundRearLayer.style.webkitTransform = 'translateZ(0)';
-      this.$.backgroundRearLayer.style.transitionProperty = 'opacity';
-      this.$.backgroundRearLayer.style.transitionDuration = duration;
-    },
-    /** @this Polymer.AppLayout.ElementWithBackground */
-    run: function run(p, y) {
-      if (p >= 1) {
-        this.$.backgroundFrontLayer.style.opacity = 0;
-        this.$.backgroundRearLayer.style.opacity = 1;
-      } else {
-        this.$.backgroundFrontLayer.style.opacity = 1;
-        this.$.backgroundRearLayer.style.opacity = 0;
-      }
-    }
-  };
+  });
 </script>
 
 
@@ -12637,7 +12649,7 @@ Custom property              | Description                  | Default
   /**
    * Shorthand for the waterfall, resize-title, blend-background, and parallax-background effects.
    */
-  Polymer.AppLayout.scrollEffects.material = {
+  Polymer.AppLayout.registerEffect('material', {
     /**
      * @this Polymer.AppLayout.ElementWithBackground
      */
@@ -12645,10 +12657,70 @@ Custom property              | Description                  | Default
       this.effects = 'waterfall resize-title blend-background parallax-background';
       return false;
     }
-  };
+  });
 </script>
 
 
+
+
+
+
+
+
+
+<script>
+  /**
+   * Upon scrolling past a threshold, CSS transition the font size of a designated title element
+   * between two values.
+   */
+  Polymer.AppLayout.registerEffect('resize-snapped-title', {
+    /**
+     * @this Polymer.AppLayout.ElementWithBackground
+     */
+    setUp: function setUp(config) {
+      var title = Polymer.dom(this).querySelector('[title]');
+      var condensedTitle = Polymer.dom(this).querySelector('[condensed-title]');
+      var duration = config.duration || '0.2s';
+      var fx = {};
+
+      if (!condensedTitle) {
+        this._warn(this._logf('effects[resize-snapped-title]', 'undefined `condensed-title`'));
+        return false;
+      }
+      if (!title) {
+        this._warn(this._logf('effects[resize-snapped-title]', 'undefined `title`'));
+        return false;
+      }
+
+      title.style.transitionProperty = 'opacity';
+      title.style.transitionDuration = duration;
+      condensedTitle.style.transitionProperty = 'opacity';
+      condensedTitle.style.transitionDuration = duration;
+
+      fx.condensedTitle = condensedTitle;
+      fx.title = title;
+      this._fxResizeSnappedTitle = fx;
+    },
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    tearDown: function tearDown() {
+      var fx = this._fxResizeSnappedTitle;
+      fx.title.style.transition = '';
+      fx.condensedTitle.style.transition = '';
+      delete this._fxResizeSnappedTitle;
+    },
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    run: function run(p, y) {
+      var fx = this._fxResizeSnappedTitle;
+      if (p > 0) {
+        fx.title.style.opacity = 0;
+        fx.condensedTitle.style.opacity = 1;
+      } else {
+        fx.title.style.opacity = 1;
+        fx.condensedTitle.style.opacity = 0;
+      }
+    }
+  });
+</script>
 
 
 
@@ -12705,7 +12777,8 @@ Custom property                  | Description                            | Defa
 `--app-drawer-content-container` | Mixin for the drawer content container | {}
 `--app-drawer-scrim-background`  | Background for the scrim               | rgba(0, 0, 0, 0.5)
 
-@demo app-drawer/demo.html
+@demo app-drawer/demo/demo1.html
+@demo app-drawer/demo/demo2.html
 -->
 
 <dom-module id="app-drawer">
@@ -12775,7 +12848,7 @@ Custom property                  | Description                            | Defa
 
         visibility: visible;
 
-        width: 15px;
+        width: 20px;
 
         content: '';
       }
@@ -12853,13 +12926,13 @@ Custom property                  | Description                            | Defa
         },
 
         /**
-         * The alignment of the drawer on the screen ('start', 'end', 'left', or 'right').
+         * The alignment of the drawer on the screen ('left', 'right', 'start' or 'end').
          * 'start' computes to left and 'end' to right in LTR layout and vice versa in RTL
          * layout.
          */
         align: {
           type: String,
-          value: 'start',
+          value: 'left'
         },
 
         /**
@@ -12879,12 +12952,15 @@ Custom property                  | Description                            | Defa
           type: Boolean,
           value: false,
           reflectToAttribute: true
-        }
-      },
+        },
 
-      listeners: {
-        track: '_track',
-        transitionend: '_transitionend'
+        /**
+         * Trap keyboard focus when the drawer is opened and not persistent.
+         */
+        noFocusTrap: {
+          type: Boolean,
+          value: false
+        }
       },
 
       observers: [
@@ -12898,30 +12974,39 @@ Custom property                  | Description                            | Defa
 
       _drawerState: 0,
 
-      _boundKeydownHandler: null,
+      _boundEscKeydownHandler: null,
+
+      _lastFocusedElement: null,
+
+      _firstTabStop: null,
+
+      _lastTabStop: null,
 
       ready: function() {
         // Set the scroll direction so you can vertically scroll inside the drawer.
         this.setScrollDirection('y');
 
-        // Only transition the drawer shortly after it is attached (e.g. app-drawer-layout
+        // Only transition the drawer after its first render (e.g. app-drawer-layout
         // may need to set the initial opened state which should not be transitioned).
         this._setTransitionDuration('0s');
-
-        this._boundKeydownHandler = this._keydownHandler.bind(this);
       },
 
       attached: function() {
-        // Only transition the drawer shortly after it is attached (e.g. app-drawer-layout
+        // Only transition the drawer after its first render (e.g. app-drawer-layout
         // may need to set the initial opened state which should not be transitioned).
-        requestAnimationFrame(function() {
+        Polymer.RenderStatus.afterNextRender(this, function() {
           this._setTransitionDuration('');
+          this._boundEscKeydownHandler = this._escKeydownHandler.bind(this);
           this._resetDrawerState();
-        }.bind(this));
+
+          this.listen(this, 'track', '_track');
+          this.addEventListener('transitionend', this._transitionend.bind(this));
+          this.addEventListener('keydown', this._tabKeydownHandler.bind(this))
+        });
       },
 
       detached: function() {
-        document.removeEventListener('keydown', this._boundKeydownHandler);
+        document.removeEventListener('keydown', this._boundEscKeydownHandler);
       },
 
       /**
@@ -12976,7 +13061,7 @@ Custom property                  | Description                            | Defa
         this._setPosition(this.align);
       },
 
-      _keydownHandler: function(event) {
+      _escKeydownHandler: function(event) {
         var ESC_KEYCODE = 27;
         if (event.keyCode === ESC_KEYCODE) {
           // Prevent any side effects if app-drawer closes.
@@ -13199,10 +13284,12 @@ Custom property                  | Description                            | Defa
 
         if (oldState !== this._drawerState) {
           if (this._drawerState === this._DRAWER_STATE.OPENED) {
-            document.addEventListener('keydown', this._boundKeydownHandler);
+            document.addEventListener('keydown', this._boundEscKeydownHandler);
+            this._addKeyboardFocusTrap();
             document.body.style.overflow = 'hidden';
           } else {
-            document.removeEventListener('keydown', this._boundKeydownHandler);
+            document.removeEventListener('keydown', this._boundEscKeydownHandler);
+            this._removeKeyboardFocusTrap();
             document.body.style.overflow = '';
           }
 
@@ -13211,6 +13298,77 @@ Custom property                  | Description                            | Defa
             this.fire('app-drawer-transitioned');
           }
         }
+      },
+
+      _addKeyboardFocusTrap: function() {
+        if (this.noFocusTrap) {
+          return;
+        }
+
+        this._lastFocusedElement = this._getDeepActiveElement();
+
+        // NOTE: Unless we use /deep/ (which we shouldn't since it's deprecated), this will
+        // not select focusable elements inside shadow roots.
+        var focusableElementsSelector = [
+            'a[href]:not([tabindex="-1"])',
+            'area[href]:not([tabindex="-1"])',
+            'input:not([disabled]):not([tabindex="-1"])',
+            'select:not([disabled]):not([tabindex="-1"])',
+            'textarea:not([disabled]):not([tabindex="-1"])',
+            'button:not([disabled]):not([tabindex="-1"])',
+            'iframe:not([tabindex="-1"])',
+            '[tabindex]:not([tabindex="-1"])',
+            '[contentEditable=true]:not([tabindex="-1"])'
+          ].join(',');
+        var focusableElements = Polymer.dom(this).querySelectorAll(focusableElementsSelector);
+
+        if (focusableElements.length > 0) {
+          this._firstTabStop = focusableElements[0];
+          this._lastTabStop = focusableElements[focusableElements.length - 1];
+          this._firstTabStop.focus();
+        } else {
+          // Reset saved tab stops when there are no focusable elements in the drawer.
+          this._firstTabStop = null;
+          this._lastTabStop = null;
+        }
+      },
+
+      _removeKeyboardFocusTrap: function() {
+        if (!this.noFocusTrap && this._lastFocusedElement) {
+          this._lastFocusedElement.focus();
+        }
+      },
+
+      _tabKeydownHandler: function(event) {
+        if (this.noFocusTrap) {
+          return;
+        }
+
+        var TAB_KEYCODE = 9;
+        if (this._drawerState === this._DRAWER_STATE.OPENED && event.keyCode === TAB_KEYCODE) {
+          if (event.shiftKey) {
+            if (this._firstTabStop && Polymer.dom(event).localTarget === this._firstTabStop) {
+              event.preventDefault();
+              this._lastTabStop.focus();
+            }
+          } else {
+            if (this._lastTabStop && Polymer.dom(event).localTarget === this._lastTabStop) {
+              event.preventDefault();
+              this._firstTabStop.focus();
+            }
+          }
+        }
+      },
+
+      _getDeepActiveElement: function() {
+        // document.activeElement can be null
+        // https://developer.mozilla.org/en-US/docs/Web/API/Document/activeElement
+        // In case of null, default it to document.body.
+        var active = document.activeElement || document.body;
+        while (active.root && Polymer.dom(active.root).activeElement) {
+          active = Polymer.dom(active.root).activeElement;
+        }
+        return active;
       },
 
       _MIN_FLING_THRESHOLD: 0.2,
@@ -13514,7 +13672,7 @@ or when the scrollable element is scrolled to the top.
 ## Scroll effects
 
 Scroll effects are _optional_ visual effects applied in app-header based on scroll position. For example,
-The [Material Design scrollig techniques](https://www.google.com/design/spec/patterns/scrolling-techniques.html)
+The [Material Design scrolling techniques](https://www.google.com/design/spec/patterns/scrolling-techniques.html)
 recommends effects that can be installed via the `effects` property. e.g.
 
 ```html
@@ -14160,8 +14318,9 @@ Using an own scrolling region:
 </app-header-layout>
 ```
 
-@demo app-header-layout/demo1.html
-@demo app-header-layout/demo2.html
+@demo app-header-layout/demo/demo1.html
+@demo app-header-layout/demo/demo2.html
+@demo app-header-layout/demo/music.html
 -->
 
 <dom-module id="app-header-layout">
