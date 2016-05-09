@@ -8,7 +8,7 @@ environment:
 dependencies:
   browser: ^0.10.0
   polymer: ^1.0.0-rc.16
-  polymer_app_layout: ^0.0.1
+  polymer_app_layout: ^0.0.3
   web_components: ^0.12.0
   dart_to_js_script_rewriter: ^1.0.1
 dev_dependencies:
