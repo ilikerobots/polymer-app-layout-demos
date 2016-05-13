@@ -1,0 +1,107 @@
+<dom-module id="recipe-app">
+    <template>
+        <style>
+            .avatar-container {
+                position: relative;
+                border: 2px solid #00AA8D;
+                border-radius: 50%;
+                height: 90px;
+                padding: 2px;
+                width: 90px;
+                margin: 20px auto;
+            }
+
+            .avatar-container .image {
+                background-image: url('//app-layout-assets.appspot.com/assets/pesto/avatar.jpg');
+                background-size: contain;
+                border-radius: 50%;
+                height: 100%;
+                width: 100%;
+            }
+
+            .contact-info {
+                margin: 0 20px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid #CCC;
+                text-align: center;
+            }
+
+            .contact-info .name {
+                font-weight: bold;
+            }
+
+            .contact-info .email {
+                color: #999;
+            }
+
+            paper-item {
+                @apply(--layout-center-center);
+                height: 54px;
+            }
+
+            paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+        </style>
+
+        <app-drawer-layout responsive-width="1280px">
+
+            <!-- nav panel -->
+            <app-drawer id="drawer" swipe-open>
+                <app-header-layout has-scrolling-region>
+
+                    <app-header fixed>
+                        <div class="avatar-container">
+                            <div class="image"></div>
+                        </div>
+                        <div class="contact-info">
+                            <div class="name">Jonathan</div>
+                            <div class="email">heyfromjonathan@gmail.com</div>
+                        </div>
+                    </app-header>
+
+                    <!-- nav menu -->
+                    <paper-listbox
+                            selected="{{pageData.page}}"
+                            attr-for-selected="name"
+                            on-iron-activate="drawerSelected">
+                        <paper-item name="home">Home</paper-item>
+                        <paper-item name="favorites">Favorites</paper-item>
+                        <paper-item name="saved">Saved</paper-item>
+                        <paper-item name="trending">Trending</paper-item>
+                    </paper-listbox>
+
+                </app-header-layout>
+            </app-drawer>
+
+            <app-scrollpos-control
+                    selected="[[pageData.page]]"
+                    reset="[[isDetailPage(pageData.page)]]"></app-scrollpos-control>
+
+            <!-- list/detail pages -->
+            <iron-pages selected="[[pageData.page]]" attr-for-selected="name">
+
+                <recipe-list name="home" recipes="[[recipes]]">
+                    <paper-icon-button icon="app:menu" drawer-toggle></paper-icon-button>
+                </recipe-list>
+
+                <recipe-list name="favorites">
+                    <paper-icon-button icon="app:menu" drawer-toggle></paper-icon-button>
+                </recipe-list>
+
+                <recipe-list name="saved">
+                    <paper-icon-button icon="app:menu" drawer-toggle></paper-icon-button>
+                </recipe-list>
+
+                <recipe-list name="trending">
+                    <paper-icon-button icon="app:menu" drawer-toggle></paper-icon-button>
+                </recipe-list>
+
+                <recipe-detail id="detailView" name="detail"
+                            recipe="[[getRecipe(recipes, pageData.page)]]"></recipe-detail>
+
+            </iron-pages>
+
+        </app-drawer-layout>
+    </template>
+</dom-module>
