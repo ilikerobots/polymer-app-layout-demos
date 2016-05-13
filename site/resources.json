@@ -7,10 +7,16 @@
       "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/templates/getting_started/"
     },
     {
-      "name": "TEST DRIVE",
+      "name": "Test Drive",
       "thumbnail": "site/images/test-drive.png",
       "demoUrl": "templates/test_drive/",
       "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/templates/test_drive/"
+    },
+    {
+      "name": "Pesto",
+      "thumbnail": "site/images/pesto.png",
+      "demoUrl": "templates/pesto/",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/templates/pesto/"
     },
     {
       "name": "Landing Page",
