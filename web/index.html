@@ -205,6 +205,28 @@
             background-size: contain;
         }
 
+        .scrolling_region {
+            position: relative;
+            height: 480px;
+            width: 100%;
+            overflow-y: auto;
+            /* fixes scroll track's z-index bug in safari*/
+            -webkit-transform: translateZ(0);
+            margin: 8px;
+            background-color: #fff;
+            @apply(--shadow-elevation-2dp);
+        }
+
+        .scrolling_region paper-list-item {
+            border-bottom: 1px solid #ececec;
+        }
+
+        .scrolling_region paper-button {
+            background-color: #00D2B8;
+            color: #fff;
+            line-height: 1.0;
+        }
+
         @media (max-width: 1024px) {
             .heading {
                 margin-left: 16px;
@@ -259,19 +281,6 @@
             }
         }
 
-        #scrollingRegion {
-            position: relative;
-            height: 480px;
-            width: 100%;
-            overflow-y: auto;
-            /* fixes scroll track's z-index bug in safari*/
-            -webkit-transform: translateZ(0);
-            margin: 8px;
-            padding-bottom: 24px;
-            background-color: #fff;
-            @apply(--shadow-elevation-2dp);
-
-        }
     </style>
 
 </head>
@@ -356,24 +365,21 @@
         <p>The demos show how to combine App Layout elements to quickly create an app scaffold. This is a great place to
             learn how to use elements and start building your app.</p>
         <div class="grid">
-            <div id="scrollingRegion">
-                    <!-- This app-box uses `#scrollingRegion` as the scroller element -->
-                    <app-box scroll-target="scrollingRegion">
-                        <template is="dom-repeat" items="{{resources.demos}}">
-                            <paper-item style="text-align: left">
-                                <paper-item-body two-line>
-                                    <div>{{item.name}}</div>
-                                    <div secondary>{{item.desc}}</div>
-                                </paper-item-body>
-                                <a href="{{item.demoUrl}}" target="_blank" tabindex="-1"><paper-icon-button icon="http" alt="View Demo"></paper-icon-button></a>
-                                <a href="{{item.sourceUrl}}" target="_blank" tabindex="-1"><paper-icon-button icon="code" alt="View Source"></paper-icon-button></a>
-                            </paper-item>
-
-
-                        </template>
-
-
-                    </app-box>
+            <div class="scrolling_region">
+                <template is="dom-repeat" items="{{resources.demos}}">
+                    <paper-item style="text-align: left">
+                        <paper-item-body two-line>
+                            <div>{{item.name}}</div>
+                            <div secondary>{{item.desc}}</div>
+                        </paper-item-body>
+                        <a href="{{item.demoUrl}}" target="_blank" tabindex="-1">
+                            <paper-button raised>View</paper-button>
+                        </a>
+                        <a href="{{item.sourceUrl}}" target="_blank" tabindex="-1">
+                            <paper-button raised>Source</paper-button>
+                        </a>
+                    </paper-item>
+                </template>
             </div>
         </div>
 

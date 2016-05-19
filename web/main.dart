@@ -14,7 +14,6 @@ import 'package:polymer_elements/paper_icon_item.dart';
 import 'package:polymer_elements/paper_icon_button.dart';
 import 'package:polymer_elements/shadow.dart';
 
-import 'package:polymer_app_layout/app_box.dart';
 import 'package:polymer_app_layout/app_header.dart';
 import 'package:polymer_app_layout/app_toolbar.dart';
 import 'package:polymer_app_layout/app_header.dart';
