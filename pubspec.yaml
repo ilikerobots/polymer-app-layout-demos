@@ -1,5 +1,5 @@
 name: polymer_app_layout_demos
-version: 0.0.1
+version: 0.0.2
 description: Web demo of the polymer_app_layout package
 
 environment:
@@ -8,7 +8,7 @@ environment:
 dependencies:
   browser: ^0.10.0
   polymer: ^1.0.0-rc.16
-  polymer_app_layout: ^0.0.4
+  polymer_app_layout: ^0.0.5
   web_components: ^0.12.0
   route_hierarchical:
   dart_to_js_script_rewriter: ^1.0.1
