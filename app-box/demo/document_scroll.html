@@ -8145,7 +8145,7 @@ if (Polymer.Bind) {
   };
 
   /**
-   * Registers a scroll effect to be used in elements that implement the 
+   * Registers a scroll effect to be used in elements that implement the
    * `Polymer.AppScrollEffectsBehavior` behavior.
    *
    * @param {string} effectName The effect name.
@@ -8209,19 +8209,20 @@ if (Polymer.Bind) {
         var deltaScrollTop = scrollTop - currentScrollTop;
         var deltaScrollLeft = scrollLeft - currentScrollLeft;
         var duration = 300;
-
-        (function updateFrame() {
+        var updateFrame = (function updateFrame() {
           var now = Date.now();
           var elapsedTime = now - startTime;
 
           if (elapsedTime < duration) {
-            scrollTo(
-                timingFn(elapsedTime, currentScrollLeft, deltaScrollLeft, duration),
-                timingFn(elapsedTime, currentScrollTop, deltaScrollTop, duration)
-              );
-            requestAnimationFrame(updateFrame.bind(this));
+            scrollTo(timingFn(elapsedTime, currentScrollLeft, deltaScrollLeft, duration),
+                timingFn(elapsedTime, currentScrollTop, deltaScrollTop, duration));
+            requestAnimationFrame(updateFrame);
+          } else {
+            scrollTo(scrollLeft, scrollTop);
           }
-        }).call(this);
+        }).bind(this);
+        
+        updateFrame();
       }
 
     } else if (options.behavior === 'silent') {
@@ -8393,7 +8394,7 @@ if (Polymer.Bind) {
     },
 
     observers: [
-      '_effectsChanged(effects, effectsConfig)'
+      '_effectsChanged(effects, effectsConfig, isAttached)'
     ],
 
     /**
@@ -8487,10 +8488,10 @@ if (Polymer.Bind) {
     /**
      * Called when `effects` or `effectsConfig` changes.
      */
-    _effectsChanged: function(effects, effectsConfig) {
+    _effectsChanged: function(effects, effectsConfig, isAttached) {
       this._tearDownEffects();
 
-      if (effects === '') {
+      if (effects === '' || !isAttached) {
         return;
       }
       effects.split(' ').forEach(function(effectName) {
@@ -8588,6 +8589,16 @@ if (Polymer.Bind) {
       if (!this.disabled) {
         this._updateScrollState(this._clampedScrollTop);
       }
+    },
+    
+    /**
+     * Override this method to return a reference to a node in the local DOM.
+     * The node is consumed by a scroll effect.
+     *
+     * @param {string} id The id for the node.
+     */
+    _getDOMRef: function(id) {
+      this._warn(this._logf('_getDOMRef', '`'+ id +'` is undefined'));
     },
 
     _getUndefinedMsg: function(effectName) {
@@ -9368,6 +9379,15 @@ Mixin | Description | Default
         this.resetLayout();
       },
 
+      _getDOMRef: function(id) {
+        if (id === 'background') {
+          return this.$.background;
+        }
+        if (id === 'backgroundFrontLayer') {
+          return this.$.backgroundFrontLayer;
+        }
+      },
+
       /**
        * Returns an object containing the progress value of the scroll effects.
        *
@@ -9397,31 +9417,36 @@ Mixin | Description | Default
      * @this Polymer.AppLayout.ElementWithBackground
      */
     setUp: function setUp(config) {
+      var fx = {};
       var scalar = parseFloat(config.scalar);
-
-      this._deltaBg = this.$.backgroundFrontLayer.offsetHeight - this.$.background.offsetHeight;
-      if (this._deltaBg === 0) {
+      fx.background = this._getDOMRef('background');
+      fx.backgroundFrontLayer = this._getDOMRef('backgroundFrontLayer');
+      fx.backgroundRearLayer = this._getDOMRef('backgroundRearLayer');
+      fx.deltaBg = fx.backgroundFrontLayer.offsetHeight - fx.background.offsetHeight;
+      if (fx.deltaBg === 0) {
         if (isNaN(scalar)) {
           scalar = 0.8;
         }
-        this._deltaBg = this._dHeight * scalar;
+        fx.deltaBg = this._dHeight * scalar;
       } else {
         if (isNaN(scalar)) {
           scalar = 1;
         }
-        this._deltaBg = this._deltaBg * scalar;
+        fx.deltaBg = fx.deltaBg * scalar;
+      }
+      this._fxParallaxBackground = fx;
+    },
+    /** @this Polymer.AppLayout.ElementWithBackground */
+    run: function run(p, y) {
+      var fx = this._fxParallaxBackground;
+      this.transform('translate3d(0px, ' + (fx.deltaBg * Math.min(1, p)) + 'px, 0px)', fx.backgroundFrontLayer);
+      if (fx.backgroundRearLayer) {
+        this.transform('translate3d(0px, ' + (fx.deltaBg * Math.min(1, p)) + 'px, 0px)', fx.backgroundRearLayer);
       }
     },
     /** @this Polymer.AppLayout.ElementWithBackground */
     tearDown: function tearDown() {
-      delete this._deltaBg;
-    },
-    /** @this Polymer.AppLayout.ElementWithBackground */
-    run: function run(p, y) {
-      this.transform('translate3d(0px, ' + (this._deltaBg * Math.min(1, p)) + 'px, 0px)', this.$.backgroundFrontLayer);
-      if (this.$.backgroundRearLayer) {
-        this.transform('translate3d(0px, ' + (this._deltaBg * Math.min(1, p)) + 'px, 0px)', this.$.backgroundRearLayer);
-      }
+      delete this._fxParallaxBackground;
     }
   });
 </script>
