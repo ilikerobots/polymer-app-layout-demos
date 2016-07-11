@@ -47,6 +47,7 @@ transformers:
     - web/templates/getting_started/index.html
     - web/templates/landing_page/index.html
     - web/templates/pesto/index.html
+    - web/templates/shrine/index.html
     - web/patterns/transform_navigation/index.html
     - web/patterns/expand_card/index.html
 - dart_to_js_script_rewriter

@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Shrine</title>
+
+  <script src="packages/web_components/webcomponents-lite.min.js"></script>
+  <script defer type="application/dart" src="index.dart"></script>
+</head>
+
+<body unresolved>
+
+  <template is="dom-bind">
+    <iron-ajax url="data/items.json" auto last-response="{{items}}"></iron-ajax>
+    <iron-ajax url="data/featured.json" auto last-response="{{featuredItems}}"></iron-ajax>
+    <main-app items="[[items]]" featured-items="[[featuredItems]]"></main-app>
+  </template>
+</body>
+</html>
