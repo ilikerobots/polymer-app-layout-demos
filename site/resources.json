@@ -19,6 +19,12 @@
       "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/templates/pesto/"
     },
     {
+      "name": "Shrine",
+      "thumbnail": "site/images/shrine.png",
+      "demoUrl": "templates/shrine/",
+      "sourceUrl": "https://github.com/ilikerobots/polymer-app-layout-demos/tree/master/web/templates/shrine/"
+    },
+    {
       "name": "Landing Page",
       "thumbnail": "site/images/landing-page.png",
       "demoUrl": "templates/landing_page/",
