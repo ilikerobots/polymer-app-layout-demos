@@ -10,6 +10,7 @@ import 'package:route_hierarchical/client.dart';
 import 'package:polymer_elements/iron_flex_layout.dart';
 import 'package:polymer_elements/paper_icon_button.dart';
 import 'package:polymer_elements/paper_tabs.dart';
+import 'package:polymer_elements/paper_tab.dart';
 import 'package:polymer_elements/iron_icons.dart';
 import 'package:polymer_elements/iron_pages.dart';
 import 'package:polymer_app_layout/app_scroll_effects.dart';
@@ -103,9 +104,7 @@ class MainApp extends PolymerElement with PolymerMixin, PolymerBase, JsProxy{
 
   @reflectable
   getFeaturedItem(List fItems, section) {
-    var item  = fItems.firstWhere((item) => item['category'].toLowerCase() == section);
-    return item;
-
+    return fItems.length == 0 ? null :  fItems.firstWhere((item) => item['category'].toLowerCase() == section);
   }
 
   @reflectable
